@@ -3,6 +3,12 @@
 ## Description
 This is a command-line application to manage a company's employee database, using Node.js, Inquirer, and PostgreSQL. The application is written in TypeScript.
 
+## Demo
+
+Watch a video demo of the Employee Tracker application in action:
+
+[Watch the demo video](https://youtu.be/fsNTghO4SqQ)
+
 ## Features
 - View all departments, roles, and employees
 - Add new departments, roles, and employees
