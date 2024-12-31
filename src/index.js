@@ -6,7 +6,7 @@ const { table } = require('console');
 const client = new Client({
   user: 'postgres',
   host: 'localhost',
-  database: 'your_database',
+  database: 'employee_tracker_db',
   password: 'root',
   port: 5432,
 });
@@ -57,24 +57,40 @@ const mainMenu = async () => {
     case 'Exit':
       client.end();
       process.exit();
+      break; // Add break statement here to prevent fall-through
+    default:
+      console.log('Invalid action');
+      mainMenu();
   }
 };
 
 const viewAllDepartments = async () => {
-  const res = await client.query('SELECT * FROM departments');
-  console.table(res.rows);
+  try {
+    const res = await client.query('SELECT * FROM departments');
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
 const viewAllRoles = async () => {
-  const res = await client.query('SELECT * FROM roles');
-  console.table(res.rows);
+  try {
+    const res = await client.query('SELECT * FROM roles');
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
 const viewAllEmployees = async () => {
-  const res = await client.query('SELECT * FROM employees');
-  console.table(res.rows);
+  try {
+    const res = await client.query('SELECT * FROM employees');
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
