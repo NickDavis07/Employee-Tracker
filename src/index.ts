@@ -1,14 +1,18 @@
 // Import required modules
 import * as inquirer from 'inquirer';
 import { Client } from 'pg';
+import * as dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Configure PostgreSQL client
 const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'employee_tracker_db',
-  password: 'root',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT || '5432', 10),
 });
 
 // Connect to the PostgreSQL database
