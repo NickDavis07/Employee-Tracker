@@ -1,9 +1,9 @@
 // index.js
 
 // Import required modules
-const inquirer = require('inquirer');
-const { Client } = require('pg');
-const { table } = require('console');
+import inquirer from 'inquirer';
+import { Client } from 'pg';
+import { table } from 'console';
 
 // Configure PostgreSQL client
 const client = new Client({
