@@ -22,7 +22,15 @@ This is a command-line application to manage a company's employee database, usin
 2. Navigate to the project directory.
 3. Run `npm install` to install the necessary dependencies.
 4. Set up your PostgreSQL database using the provided `schema.sql` and `seeds.sql` files.
-5. Update the PostgreSQL client configuration in `src/index.ts` with your database credentials.
+5. Create a `.env` file in the root directory with your PostgreSQL database credentials:
+
+```plaintext
+DB_USER=your_postgres_user
+DB_HOST=localhost
+DB_DATABASE=employee_tracker_db
+DB_PASSWORD=your_postgres_password
+DB_PORT=5432
+```
 
 ## Usage
 1. Navigate to the `db` directory: `cd db`
@@ -38,13 +46,23 @@ This is a command-line application to manage a company's employee database, usin
 - `npm start`: Runs the compiled JavaScript code.
 
 ## PostgreSQL Client Configuration
-Update the PostgreSQL client configuration in `src/index.ts` with your database credentials:
+The PostgreSQL client configuration is set up to use environment variables from the `.env` file:
 
 ```typescript
 const client = new Client({
-  user: 'your_postgres_user',
-  host: 'localhost',
-  database: 'employee_tracker_db',
-  password: 'your_postgres_password',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: parseInt(process.env.DB_PORT || '5432', 10),
 });
+```
+
+## .gitignore
+Ensure you have a `.gitignore` file to exclude `node_modules`, `dist`, and `.env` files from version control:
+
+```plaintext
+node_modules/
+dist/
+.env
+```
