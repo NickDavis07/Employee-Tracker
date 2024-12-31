@@ -16,10 +16,17 @@ const client = new Client({
 });
 
 // Connect to the PostgreSQL database
-client.connect();
+client.connect(err => {
+  if (err) {
+    console.error('Connection error', err.stack);
+  } else {
+    console.log('Connected to the database');
+  }
+});
 
 // Main menu function to prompt user for action
 const mainMenu = async () => {
+  console.log('Displaying main menu');
   const { action } = await inquirer.prompt([
     {
       type: 'list',
@@ -41,27 +48,35 @@ const mainMenu = async () => {
   // Handle user selection
   switch (action) {
     case 'View all departments':
-      viewAllDepartments();
+      console.log('Selected: View all departments');
+      await viewAllDepartments();
       break;
     case 'View all roles':
-      viewAllRoles();
+      console.log('Selected: View all roles');
+      await viewAllRoles();
       break;
     case 'View all employees':
-      viewAllEmployees();
+      console.log('Selected: View all employees');
+      await viewAllEmployees();
       break;
     case 'Add a department':
-      addDepartment();
+      console.log('Selected: Add a department');
+      await addDepartment();
       break;
     case 'Add a role':
-      addRole();
+      console.log('Selected: Add a role');
+      await addRole();
       break;
     case 'Add an employee':
-      addEmployee();
+      console.log('Selected: Add an employee');
+      await addEmployee();
       break;
     case 'Update an employee role':
-      updateEmployeeRole();
+      console.log('Selected: Update an employee role');
+      await updateEmployeeRole();
       break;
     case 'Exit':
+      console.log('Selected: Exit');
       client.end();
       process.exit();
       break;
@@ -202,4 +217,4 @@ const updateEmployeeRole = async () => {
 };
 
 // Start the application by displaying the main menu
-mainMenu();
+mainMenu().catch(err => console.error('Error in mainMenu:', err));
