@@ -18,4 +18,3 @@ VALUES ('John', 'Doe', 1, NULL),
        ('Emily', 'Jones', 3, NULL),
        ('Michael', 'Brown', 4, 3),
        ('Sarah', 'Davis', 5, 4);
-       
