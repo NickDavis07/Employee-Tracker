@@ -1,9 +1,10 @@
 // index.js
 
 // Import required modules
-const inquirer = require('inquirer');
-const { Client } = require('pg');
-const { table } = require('console');
+import inquirer from 'inquirer';
+import pkg from 'pg';
+const { Client } = pkg;
+import { table } from 'console';
 
 // Configure PostgreSQL client
 const client = new Client({
@@ -191,8 +192,12 @@ const updateEmployeeRole = async () => {
       message: 'Enter the new role ID for the employee:',
     },
   ]);
-  await client.query('UPDATE employees SET role_id = $1 WHERE id = $2', [new_role_id, employee_id]);
-  console.log('Employee role updated!');
+  try {
+    await client.query('UPDATE employees SET role_id = $1 WHERE id = $2', [new_role_id, employee_id]);
+    console.log('Employee role updated!');
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
