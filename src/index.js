@@ -1,18 +1,23 @@
 // index.js
+
+// Import required modules
 const inquirer = require('inquirer');
 const { Client } = require('pg');
 const { table } = require('console');
 
+// Configure PostgreSQL client
 const client = new Client({
   user: 'postgres',
   host: 'localhost',
-  database: 'your_database',
+  database: 'employee_tracker_db',
   password: 'root',
   port: 5432,
 });
 
+// Connect to the PostgreSQL database
 client.connect();
 
+// Main menu function to prompt user for action
 const mainMenu = async () => {
   const { action } = await inquirer.prompt([
     {
@@ -32,6 +37,7 @@ const mainMenu = async () => {
     },
   ]);
 
+  // Handle user selection
   switch (action) {
     case 'View all departments':
       viewAllDepartments();
@@ -57,27 +63,54 @@ const mainMenu = async () => {
     case 'Exit':
       client.end();
       process.exit();
+      break;
+    default:
+      console.log('Invalid action');
+      mainMenu();
   }
 };
 
+// Function to view all departments
 const viewAllDepartments = async () => {
-  const res = await client.query('SELECT * FROM departments');
-  console.table(res.rows);
+  try {
+    const res = await client.query('SELECT * FROM departments');
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
+// Function to view all roles
 const viewAllRoles = async () => {
-  const res = await client.query('SELECT * FROM roles');
-  console.table(res.rows);
+  try {
+    const res = await client.query('SELECT * FROM roles');
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
+// Function to view all employees
 const viewAllEmployees = async () => {
-  const res = await client.query('SELECT * FROM employees');
-  console.table(res.rows);
+  try {
+    const res = await client.query(`
+      SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
+      FROM employees
+      LEFT JOIN roles ON employees.role_id = roles.id
+      LEFT JOIN departments ON roles.department_id = departments.id
+      LEFT JOIN employees AS manager ON employees.manager_id = manager.id
+      ORDER BY employees.id;
+    `);
+    console.table(res.rows);
+  } catch (err) {
+    console.error('Error executing query', err.stack);
+  }
   mainMenu();
 };
 
+// Function to add a new department
 const addDepartment = async () => {
   const { name } = await inquirer.prompt([
     {
@@ -91,6 +124,7 @@ const addDepartment = async () => {
   mainMenu();
 };
 
+// Function to add a new role
 const addRole = async () => {
   const { title, salary, department_id } = await inquirer.prompt([
     {
@@ -114,6 +148,7 @@ const addRole = async () => {
   mainMenu();
 };
 
+// Function to add a new employee
 const addEmployee = async () => {
   const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
     {
@@ -142,6 +177,7 @@ const addEmployee = async () => {
   mainMenu();
 };
 
+// Function to update an employee's role
 const updateEmployeeRole = async () => {
   const { employee_id, new_role_id } = await inquirer.prompt([
     {
@@ -160,4 +196,5 @@ const updateEmployeeRole = async () => {
   mainMenu();
 };
 
+// Start the application by displaying the main menu
 mainMenu();
