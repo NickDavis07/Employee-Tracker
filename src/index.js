@@ -2,7 +2,8 @@
 
 // Import required modules
 import inquirer from 'inquirer';
-import { Client } from 'pg';
+import pkg from 'pg';
+const { Client } = pkg;
 import { table } from 'console';
 
 // Configure PostgreSQL client
