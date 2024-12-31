@@ -30,5 +30,3 @@ This is a command-line application to manage a company's employee database, usin
 4. Navigate to the src directory: `cd ../src`
 5. Run node index.js to start the application.
 6. Follow the prompts to view, add, update, or delete employees, roles, and departments.
-
-

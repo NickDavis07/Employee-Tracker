@@ -166,30 +166,43 @@ const addRole = async () => {
 
 // Function to add a new employee
 const addEmployee = async () => {
-  const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'first_name',
-      message: 'Enter the first name of the employee:',
-    },
-    {
-      type: 'input',
-      name: 'last_name',
-      message: 'Enter the last name of the employee:',
-    },
-    {
-      type: 'input',
-      name: 'role_id',
-      message: 'Enter the role ID for the employee:',
-    },
-    {
-      type: 'input',
-      name: 'manager_id',
-      message: 'Enter the manager ID for the employee:',
-    },
-  ]);
-  await client.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [first_name, last_name, role_id, manager_id]);
-  console.log('Employee added!');
+  try {
+    // Fetch existing roles and employees
+    const roles = await client.query('SELECT id, title FROM roles');
+    const employees = await client.query('SELECT id, first_name, last_name FROM employees');
+
+    // Prompt for employee details
+    const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'first_name',
+        message: 'Enter the first name of the employee:',
+      },
+      {
+        type: 'input',
+        name: 'last_name',
+        message: 'Enter the last name of the employee:',
+      },
+      {
+        type: 'list',
+        name: 'role_id',
+        message: 'Select the role for the employee:',
+        choices: roles.rows.map(role => ({ name: role.title, value: role.id })),
+      },
+      {
+        type: 'list',
+        name: 'manager_id',
+        message: 'Select the manager for the employee:',
+        choices: [{ name: 'None', value: null }].concat(employees.rows.map(emp => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))),
+      },
+    ]);
+
+    // Insert the new employee
+    await client.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [first_name, last_name, role_id, manager_id]);
+    console.log('Employee added!');
+  } catch (err) {
+    console.error('Error adding employee:', err.stack);
+  }
   mainMenu();
 };
 
