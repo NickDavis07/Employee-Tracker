@@ -2,8 +2,7 @@
 
 // Import required modules
 import inquirer from 'inquirer';
-import pkg from 'pg';
-const { Client } = pkg;
+import { Client } from 'pg';
 import { table } from 'console';
 
 // Configure PostgreSQL client
@@ -25,9 +24,9 @@ client.connect(err => {
 });
 
 // Main menu function to prompt user for action
-const mainMenu = async () => {
+const mainMenu = async (): Promise<void> => {
   console.log('Displaying main menu');
-  const { action } = await inquirer.prompt([
+  const { action } = await inquirer.prompt<{ action: string }>([
     {
       type: 'list',
       name: 'action',
@@ -87,7 +86,7 @@ const mainMenu = async () => {
 };
 
 // Function to view all departments
-const viewAllDepartments = async () => {
+const viewAllDepartments = async (): Promise<void> => {
   try {
     const res = await client.query('SELECT * FROM departments');
     console.table(res.rows);
@@ -98,7 +97,7 @@ const viewAllDepartments = async () => {
 };
 
 // Function to view all roles
-const viewAllRoles = async () => {
+const viewAllRoles = async (): Promise<void> => {
   try {
     const res = await client.query('SELECT * FROM roles');
     console.table(res.rows);
@@ -109,7 +108,7 @@ const viewAllRoles = async () => {
 };
 
 // Function to view all employees
-const viewAllEmployees = async () => {
+const viewAllEmployees = async (): Promise<void> => {
   try {
     const res = await client.query(`
       SELECT employees.id, employees.first_name, employees.last_name, roles.title, departments.name AS department, roles.salary, manager.first_name AS manager_first_name, manager.last_name AS manager_last_name
@@ -127,8 +126,8 @@ const viewAllEmployees = async () => {
 };
 
 // Function to add a new department
-const addDepartment = async () => {
-  const { name } = await inquirer.prompt([
+const addDepartment = async (): Promise<void> => {
+  const { name } = await inquirer.prompt<{ name: string }>([
     {
       type: 'input',
       name: 'name',
@@ -141,8 +140,8 @@ const addDepartment = async () => {
 };
 
 // Function to add a new role
-const addRole = async () => {
-  const { title, salary, department_id } = await inquirer.prompt([
+const addRole = async (): Promise<void> => {
+  const { title, salary, department_id } = await inquirer.prompt<{ title: string, salary: number, department_id: number }>([
     {
       type: 'input',
       name: 'title',
@@ -165,14 +164,14 @@ const addRole = async () => {
 };
 
 // Function to add a new employee
-const addEmployee = async () => {
+const addEmployee = async (): Promise<void> => {
   try {
     // Fetch existing roles and employees
     const roles = await client.query('SELECT id, title FROM roles');
     const employees = await client.query('SELECT id, first_name, last_name FROM employees');
 
     // Prompt for employee details
-    const { first_name, last_name, role_id, manager_id } = await inquirer.prompt([
+    const { first_name, last_name, role_id, manager_id } = await inquirer.prompt<{ first_name: string, last_name: string, role_id: number, manager_id: number | null }>([
       {
         type: 'input',
         name: 'first_name',
@@ -207,8 +206,8 @@ const addEmployee = async () => {
 };
 
 // Function to update an employee's role
-const updateEmployeeRole = async () => {
-  const { employee_id, new_role_id } = await inquirer.prompt([
+const updateEmployeeRole = async (): Promise<void> => {
+  const { employee_id, new_role_id } = await inquirer.prompt<{ employee_id: number, new_role_id: number }>([
     {
       type: 'input',
       name: 'employee_id',
