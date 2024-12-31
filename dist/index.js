@@ -1,4 +1,3 @@
-// index.js
 // Import required modules
 import inquirer from 'inquirer';
 import { Client } from 'pg';
@@ -11,7 +10,7 @@ const client = new Client({
     port: 5432,
 });
 // Connect to the PostgreSQL database
-client.connect(err => {
+client.connect((err) => {
     if (err) {
         console.error('Connection error', err.stack);
     }
@@ -177,13 +176,13 @@ const addEmployee = async () => {
                 type: 'list',
                 name: 'role_id',
                 message: 'Select the role for the employee:',
-                choices: roles.rows.map(role => ({ name: role.title, value: role.id })),
+                choices: roles.rows.map((role) => ({ name: role.title, value: role.id })),
             },
             {
                 type: 'list',
                 name: 'manager_id',
                 message: 'Select the manager for the employee:',
-                choices: [{ name: 'None', value: null }].concat(employees.rows.map(emp => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))),
+                choices: [{ name: 'None', value: null }].concat(employees.rows.map((emp) => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))),
             },
         ]);
         // Insert the new employee
@@ -219,4 +218,4 @@ const updateEmployeeRole = async () => {
     mainMenu();
 };
 // Start the application by displaying the main menu
-mainMenu().catch(err => console.error('Error in mainMenu:', err));
+mainMenu().catch(err => console.error('Error in mainMenu:', err.stack));

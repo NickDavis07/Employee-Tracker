@@ -1,9 +1,6 @@
-// index.js
-
 // Import required modules
 import inquirer from 'inquirer';
 import { Client } from 'pg';
-import { table } from 'console';
 
 // Configure PostgreSQL client
 const client = new Client({
@@ -15,7 +12,7 @@ const client = new Client({
 });
 
 // Connect to the PostgreSQL database
-client.connect(err => {
+client.connect((err: Error | null) => {
   if (err) {
     console.error('Connection error', err.stack);
   } else {
@@ -91,7 +88,7 @@ const viewAllDepartments = async (): Promise<void> => {
     const res = await client.query('SELECT * FROM departments');
     console.table(res.rows);
   } catch (err) {
-    console.error('Error executing query', err.stack);
+    console.error('Error executing query', (err as Error).stack);
   }
   mainMenu();
 };
@@ -102,7 +99,7 @@ const viewAllRoles = async (): Promise<void> => {
     const res = await client.query('SELECT * FROM roles');
     console.table(res.rows);
   } catch (err) {
-    console.error('Error executing query', err.stack);
+    console.error('Error executing query', (err as Error).stack);
   }
   mainMenu();
 };
@@ -120,7 +117,7 @@ const viewAllEmployees = async (): Promise<void> => {
     `);
     console.table(res.rows);
   } catch (err) {
-    console.error('Error executing query', err.stack);
+    console.error('Error executing query', (err as Error).stack);
   }
   mainMenu();
 };
@@ -186,13 +183,13 @@ const addEmployee = async (): Promise<void> => {
         type: 'list',
         name: 'role_id',
         message: 'Select the role for the employee:',
-        choices: roles.rows.map(role => ({ name: role.title, value: role.id })),
+        choices: roles.rows.map((role: { id: number; title: string }) => ({ name: role.title, value: role.id })),
       },
       {
         type: 'list',
         name: 'manager_id',
         message: 'Select the manager for the employee:',
-        choices: [{ name: 'None', value: null }].concat(employees.rows.map(emp => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))),
+        choices: [{ name: 'None', value: null as number | null }].concat(employees.rows.map((emp: { id: number; first_name: string; last_name: string }) => ({ name: `${emp.first_name} ${emp.last_name}`, value: emp.id }))),
       },
     ]);
 
@@ -200,7 +197,7 @@ const addEmployee = async (): Promise<void> => {
     await client.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [first_name, last_name, role_id, manager_id]);
     console.log('Employee added!');
   } catch (err) {
-    console.error('Error adding employee:', err.stack);
+    console.error('Error adding employee:', (err as Error).stack);
   }
   mainMenu();
 };
@@ -223,10 +220,10 @@ const updateEmployeeRole = async (): Promise<void> => {
     await client.query('UPDATE employees SET role_id = $1 WHERE id = $2', [new_role_id, employee_id]);
     console.log('Employee role updated!');
   } catch (err) {
-    console.error('Error executing query', err.stack);
+    console.error('Error executing query', (err as Error).stack);
   }
   mainMenu();
 };
 
 // Start the application by displaying the main menu
-mainMenu().catch(err => console.error('Error in mainMenu:', err));
+mainMenu().catch(err => console.error('Error in mainMenu:', (err as Error).stack));
