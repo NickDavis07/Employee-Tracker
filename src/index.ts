@@ -1,5 +1,5 @@
 // Import required modules
-import inquirer from 'inquirer';
+import * as inquirer from 'inquirer';
 import { Client } from 'pg';
 
 // Configure PostgreSQL client

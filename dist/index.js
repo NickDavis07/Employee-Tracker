@@ -1,8 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // Import required modules
-import inquirer from 'inquirer';
-import { Client } from 'pg';
+const inquirer = require("inquirer");
+const pg_1 = require("pg");
 // Configure PostgreSQL client
-const client = new Client({
+const client = new pg_1.Client({
     user: 'postgres',
     host: 'localhost',
     database: 'employee_tracker_db',
